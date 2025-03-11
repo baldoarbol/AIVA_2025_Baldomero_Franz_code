@@ -2,6 +2,6 @@
 Script principal del sistema
 """
 
-import image_preprocessor
-import component_detector
-import price_calculator
+import components.image_preprocessor
+import components.transistor_detector
+import components.price_calculator

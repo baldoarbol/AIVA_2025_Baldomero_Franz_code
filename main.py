@@ -14,10 +14,9 @@ raw_img = cv2.imread(input_directory + image_name, cv2.IMREAD_COLOR)
 
 preprocessed_img = preprocessor.process_image(raw_img)
 
-num_small_t = detector.detect_transistor(t_type="small")
-num_big_t = detector.detect_transistor(t_type="big")
+small_t, big_t = detector.detect_transistors(preprocessed_img)
 
-total_price = calculator.compute_price(num_small_t, num_big_t)
+total_price = calculator.compute_price(small_t["num"], big_t["num"])
 
 print(f"PRECIO TOTAL: {total_price}")
 

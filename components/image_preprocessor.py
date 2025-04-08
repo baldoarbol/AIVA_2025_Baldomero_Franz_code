@@ -5,6 +5,13 @@ import cv2
 import numpy as np
 
 
+def denoise_image(image: np.ndarray) -> np.ndarray:
+    """
+    Elimina ruido de la imagen utilizando un filtro Gaussiano.
+    """
+    return cv2.GaussianBlur(image, (5, 5), 0)
+
+
 def reduce_scale(image: np.ndarray, width: int = 512) -> np.ndarray:
     """
     Escala la imagen para que el ancho sea de 512 píxeles, manteniendo la relación de aspecto.
@@ -21,11 +28,13 @@ def image_to_grayscale(image: np.ndarray) -> np.ndarray:
     return cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
 
-def detect_borders(image_gray: np.ndarray) -> np.ndarray:
+def detect_borders(image: np.ndarray) -> np.ndarray:
     """
-    Detecta los bordes en una imagen en escala de grises usando el algoritmo de Canny.
+    Detecta bordes usando el algoritmo de Canny, aplicando previamente
+    eliminación de ruido y conversión a escala de grises.
     """
-    return cv2.Canny(image_gray, threshold1=100, threshold2=200)
+    edges = cv2.Canny(image, threshold1=100, threshold2=200)
+    return edges
 
 
 def detect_circles(edges: np.ndarray) -> np.ndarray:
@@ -69,7 +78,7 @@ def process_image(image: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
     """
     Procesa una imagen con una serie de transformaciones:
     - Reducción de escala
-    - Detección de círculos sobre imagen en escala de grises
+    - Detección de círculos (con bordes por Canny)
     - Filtro de color HSV sobre la copia original
 
     :param image: Imagen de entrada en formato numpy.ndarray.
@@ -78,12 +87,11 @@ def process_image(image: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
     image_scaled = reduce_scale(image)
     image_copy = image_scaled.copy()
 
-    # Flujo 1: Círculos detectados
-    gray = image_to_grayscale(image_scaled)
-    edges = detect_borders(gray)
+    # Flujo 1: Detección de círculos
+    edges = detect_borders(image_scaled)
     circles_detected = detect_circles(edges)
 
-    # Flujo 2: Filtro de color gris
+    # Flujo 2: Máscara de color gris
     color_mask = color_filter(image_copy)
 
     return circles_detected, color_mask

@@ -1,96 +1,54 @@
+"""
+Script para probar componentes
+"""
 import cv2
-import numpy as np
 import matplotlib
-matplotlib.use('TkAgg')  # Usa un backend más estable
 import matplotlib.pyplot as plt
+import components.image_preprocessor as preprocessor
 
-# === CONFIGURACIÓN (ajustable) ===
+matplotlib.use('TkAgg')
 
-# Suavizado (cuanto mayor el valor, más borroso → menos ruido pero también menos detalle)
-GAUSSIAN_KERNEL_SIZE = (9, 9)  # Más grande = más borroso
-GAUSSIAN_SIGMA = 2             # Mayor sigma = más desenfoque
+# Cargar imagen
+img_path = "../img/rec1-1.jpg"
+image = cv2.imread(img_path)
 
-# Canny (bordes): umbrales
-CANNY_THRESH_LOW = 50          # Baja = más bordes detectados, incluso ruido
-CANNY_THRESH_HIGH = 150        # Alta = menos bordes, más estricta
+# Validar carga
+if image is None:
+    raise FileNotFoundError(f"No se pudo cargar la imagen desde la ruta: {img_path}")
 
-# HoughCircles (detección de círculos)
-DP = 1.2                       # Inverso de resolución acumuladora. Más bajo = más preciso, más lento
-MIN_DIST = 20                 # Distancia mínima entre centros de círculos detectados
-PARAM1 = 100                  # Umbral alto para Canny usado internamente
-PARAM2 = 30                   # Sensibilidad de detección (más bajo = más círculos detectados)
-MIN_RADIUS = 5                # Radio mínimo del círculo detectado
-MAX_RADIUS = 100               # Radio máximo
+# Procesar imagen
+image_scaled = preprocessor.reduce_scale(image)
+image_Scaled = preprocessor.denoise_image(image_scaled)
+gray = preprocessor.image_to_grayscale(image_scaled)
+edges = preprocessor.detect_borders(gray)
+circles_detected, color_mask = preprocessor.process_image(image)
 
-# Tolerancia para considerar círculos concéntricos
-MAX_CENTER_DISTANCE = 5       # En píxeles
-MIN_RADIUS_DIFF = 3           # Diferencia mínima de radio
-MAX_RADIUS_DIFF = 10          # Diferencia máxima de radio
+# Convertir imágenes de BGR a RGB para mostrar con matplotlib
+image_scaled_rgb = cv2.cvtColor(image_scaled, cv2.COLOR_BGR2RGB)
+circles_detected_rgb = cv2.cvtColor(circles_detected, cv2.COLOR_BGR2RGB)
 
-# === 1. Cargar imagen ===
-imagen = cv2.imread('../img/rec1-2.jpg')  # Ajusta esta ruta
-gris = cv2.cvtColor(imagen, cv2.COLOR_BGR2GRAY)
-
-# === 2. Preprocesado: desenfoque para reducir ruido ===
-blur = cv2.GaussianBlur(gris, GAUSSIAN_KERNEL_SIZE, GAUSSIAN_SIGMA)
-
-# === 3. Detección de bordes (Canny) ===
-edges = cv2.Canny(blur, CANNY_THRESH_LOW, CANNY_THRESH_HIGH)
-
-# === 4. Detección de círculos (HoughCircles) ===
-circulos = cv2.HoughCircles(
-    blur,
-    cv2.HOUGH_GRADIENT,
-    dp=DP,
-    minDist=MIN_DIST,
-    param1=PARAM1,
-    param2=PARAM2,
-    minRadius=MIN_RADIUS,
-    maxRadius=MAX_RADIUS
-)
-
-# === 5. Detectar pares de círculos concéntricos ===
-imagen_bn = cv2.cvtColor(gris, cv2.COLOR_GRAY2BGR)
-transistores_detectados = 0
-
-if circulos is not None:
-    circulos = np.round(circulos[0, :]).astype("int")
-    usados = set()
-    for i, c1 in enumerate(circulos):
-        for j, c2 in enumerate(circulos):
-            if i >= j or (i, j) in usados or (j, i) in usados:
-                continue
-            dist_centros = np.linalg.norm(np.array([c1[0], c1[1]]) - np.array([c2[0], c2[1]]))
-            diff_radio = abs(c1[2] - c2[2])
-            if dist_centros < MAX_CENTER_DISTANCE and MIN_RADIUS_DIFF < diff_radio < MAX_RADIUS_DIFF:
-                # Dibuja el círculo exterior en rojo
-                cv2.circle(imagen_bn, (c1[0], c1[1]), max(c1[2], c2[2]), (0, 0, 255), 2)
-                transistores_detectados += 1
-                usados.add((i, j))
-
-# === 6. Mostrar resultados paso a paso ===
-
-# Imagen preprocesada (desenfocada)
+# Mostrar resultados
 plt.figure(figsize=(12, 8))
-plt.subplot(1, 3, 1)
-plt.imshow(blur, cmap='gray')
-plt.title("1. Imagen desenfocada")
-plt.axis('off')
 
-# Bordes detectados
-plt.subplot(1, 3, 2)
-plt.imshow(edges, cmap='gray')
-plt.title("2. Bordes (Canny)")
-plt.axis('off')
+plt.subplot(2, 2, 1)
+plt.title("Imagen escalada")
+plt.imshow(image_scaled_rgb)
+plt.axis("off")
 
-# Detección final de transistores
-plt.subplot(1, 3, 3)
-plt.imshow(cv2.cvtColor(imagen_bn, cv2.COLOR_BGR2RGB))
-plt.title(f"3. Transistores detectados: {transistores_detectados}")
-plt.axis('off')
+plt.subplot(2, 2, 2)
+plt.title("Bordes detectados")
+plt.imshow(edges, cmap="gray")
+plt.axis("off")
+
+plt.subplot(2, 2, 3)
+plt.title("Círculos detectados")
+plt.imshow(circles_detected_rgb)
+plt.axis("off")
+
+plt.subplot(2, 2, 4)
+plt.title("Máscara de color gris")
+plt.imshow(color_mask, cmap="gray")
+plt.axis("off")
 
 plt.tight_layout()
 plt.show()
-
-# === 7. Imprimir resultado por consola ===
-print(f"✅ Transistores detectados: {transistores_detectados}")

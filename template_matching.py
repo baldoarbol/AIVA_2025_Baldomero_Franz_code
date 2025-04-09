@@ -3,7 +3,7 @@ import numpy as np
 import os
 
 # Rutas
-img_path = "../img/rec1-1.jpg" # 1, 14
+img_path = "../img/rec1-1.jpg"  # 1, 14
 templates_dir = "./templates"
 
 # Cargar imagen principal en color y también en escala de grises para matching
@@ -20,6 +20,7 @@ template_thresholds = {
     "template05.png": 0.6,
     "template06.png": 0.4,
 }
+
 
 # Función de Non-Maximum Suppression
 def non_max_suppression(rects, scores, overlapThresh):
@@ -55,6 +56,7 @@ def non_max_suppression(rects, scores, overlapThresh):
         order = order[np.where(overlap <= overlapThresh)[0] + 1]
 
     return keep
+
 
 # Procesar cada template
 template_files = [f for f in os.listdir(templates_dir) if f.lower().endswith(('.png', '.jpg', '.jpeg'))]

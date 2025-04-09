@@ -2,7 +2,7 @@ import cv2
 import os
 import csv
 import numpy as np
-from image_preprocessor import Preprocessor
+from AIVA_2025_Baldomero_Franz_code.components.image_preprocessor import Preprocessor
 
 
 class Capacitor:
@@ -116,7 +116,7 @@ class Detector:
                     h, w = template_gray.shape
 
                     result = cv2.matchTemplate(self.image, template_gray, cv2.TM_CCOEFF_NORMED)
-                    threshold = 0.75
+                    threshold = 0.76
                     loc = np.where(result >= threshold)
 
                     for pt in zip(*loc[::-1]):

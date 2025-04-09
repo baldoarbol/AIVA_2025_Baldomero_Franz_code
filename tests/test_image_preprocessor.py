@@ -24,9 +24,9 @@ class TestPreprocessor(TestCase):
         self.assertEqual(len(self.processed_img.shape), 2)
 
     def test_same_dimensions(self):
-        """La imagen procesada debe tener el mismo alto y ancho"""
-        self.assertEqual(self.raw_img.shape[0], self.processed_img.shape[0])
-        self.assertEqual(self.raw_img.shape[1], self.processed_img.shape[1])
+        """La imagen procesada debe ser la mitad de alto y ancho que la original"""
+        self.assertEqual(self.raw_img.shape[0], self.processed_img.shape[0] * 2)
+        self.assertEqual(self.raw_img.shape[1], self.processed_img.shape[1] * 2)
 
     def test_output_type(self):
         """La imagen procesada debe ser un ndarray"""

@@ -9,5 +9,5 @@ pip install -r requirements.txt
 ```
 Para ejecutar el programa, utilizar:
 ```sh
-python main.py
+python main_old.py
 ```

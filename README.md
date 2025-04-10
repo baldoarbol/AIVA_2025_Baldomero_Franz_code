@@ -68,9 +68,22 @@ El resultado se mostrará en pantalla y se guardará automáticamente en la carp
 
 ---
 
+## Ejecución de Tests
+
+Para ejecutar los tests, utilizar:
+
+```sh
+pytest ./tests
+```
+
+Como parte de los tests, se mostrará la imgen con los condensadores reales etiquetados en verde (imagen izquierda) junto con los capacitores detectados en rojo (imagen derecha).
+
+---
+
 ## Estructura del proyecto
 
 ```
+
 AIVA_2025_Baldomero_Franz_code/
 │
 ├── components/

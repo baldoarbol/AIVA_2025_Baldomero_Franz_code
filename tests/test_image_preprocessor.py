@@ -2,9 +2,9 @@ from unittest import TestCase
 import cv2
 import numpy as np
 
-from AIVA_2025_Baldomero_Franz_code.components.image_preprocessor import Preprocessor
+from components.image_preprocessor import Preprocessor
 
-input_directory = "../../img/"
+input_directory = "img/"
 image_name = "rec1-1.jpg"
 raw_img = cv2.imread(input_directory + image_name, cv2.IMREAD_COLOR)
 

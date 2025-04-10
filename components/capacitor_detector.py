@@ -2,7 +2,7 @@ import cv2
 import os
 import csv
 import numpy as np
-from AIVA_2025_Baldomero_Franz_code.components.image_preprocessor import Preprocessor
+from .image_preprocessor import Preprocessor
 
 
 class Capacitor:
@@ -96,6 +96,7 @@ class Detector:
     def detect(self):
         """
         Ejecuta el proceso de detección y devuelve listas de capacitores grandes y pequeños.
+        Se descartan las detecciones con variación de intensidad muy baja.
         """
         all_rects = []
         all_scores = []
@@ -116,7 +117,7 @@ class Detector:
                     h, w = template_gray.shape
 
                     result = cv2.matchTemplate(self.image, template_gray, cv2.TM_CCOEFF_NORMED)
-                    threshold = 0.76
+                    threshold = 0.7
                     loc = np.where(result >= threshold)
 
                     for pt in zip(*loc[::-1]):
@@ -133,9 +134,24 @@ class Detector:
             x1, y1, x2, y2 = all_rects[i]
             w, h = x2 - x1, y2 - y1
             cap_type = all_types[i]
+
+            # Extraer ROI de la imagen preprocesada
+            roi = self.image[y1:y1 + h, x1:x1 + w]
+            if roi.size == 0:
+                continue
+
+            # Comprobar variación de intensidad
+            min_val = int(np.min(roi))
+            max_val = int(np.max(roi))
+            if max_val - min_val < 100:
+                continue  # descartar por falta de contraste
+
+            # Añadir capacitor válido
             if cap_type == 'small':
                 small_caps.append(SmallCapacitor(x1, y1, w, h))
             elif cap_type == 'big':
                 big_caps.append(BigCapacitor(x1, y1, w, h))
 
         return big_caps, small_caps
+
+

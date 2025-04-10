@@ -2,7 +2,7 @@ import cv2
 import os
 import datetime
 from typing import List
-from AIVA_2025_Baldomero_Franz_code.components.capacitor_detector import SmallCapacitor, BigCapacitor
+from .capacitor_detector import SmallCapacitor, BigCapacitor
 
 
 class ResultGenerator:
@@ -74,9 +74,9 @@ class ResultGenerator:
         cv2.destroyAllWindows()
 
         # Guardar imagen
-        os.makedirs("./output", exist_ok=True)
+        os.makedirs("../output", exist_ok=True)
         date_str = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-        filename = f"./output/output-{date_str}.png"
+        filename = f"../output/output-{date_str}.png"
         success = cv2.imwrite(filename, annotated)
         if success:
             print(f"Resultado guardado en {filename}")

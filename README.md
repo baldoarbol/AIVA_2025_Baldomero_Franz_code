@@ -62,7 +62,7 @@ python main.py img/rec1-1.jpg
 
 Donde `img/rec1-1.jpg` es la ruta a una imagen de placa base. Puedes sustituirla por cualquier otra imagen incluida en la carpeta `/img`.
 
-> ⚠️ Solo se adjunta una imagen de ejemplo. Para hacer pruebas completas, es necesario añadir más imágenes a la carpeta `img/`.
+> ⚠️ Solo se adjunta una imagen de ejemplo. Si se desea hacer más pruebas, es necesario añadir más imágenes a la carpeta `img/`.
 
 El resultado se mostrará en pantalla y se guardará automáticamente en la carpeta `output`, que se creará si no existe.
 

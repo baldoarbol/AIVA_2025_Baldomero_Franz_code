@@ -64,6 +64,14 @@ Donde `img/rec1-1.jpg` es la ruta a una imagen de placa base. Puedes sustituirla
 
 > ⚠️ Solo se adjunta una imagen de ejemplo. Si se desea hacer más pruebas, es necesario añadir más imágenes a la carpeta `img/`.
 
+Para ejecutar el sistema utilizando una webcam, usar:
+
+```sh
+python main.py cam
+```
+
+> ⚠️ Para utilizar la webcam, asegúrese de que la cámara está conectada y reconocida por el sistema operativo.
+
 El resultado se mostrará en pantalla y se guardará automáticamente en la carpeta `output`, que se creará si no existe.
 
 ---

@@ -37,6 +37,6 @@ class CapacitorDetectionManager:
         big_caps, small_caps = detector.detect()
 
         scale = 0.5
-        board_cost = 40
+        board_cost = 100
         result_gen = ResultGenerator(self.image, big_caps, small_caps, scale)
         result_gen.show_result(board_cost)

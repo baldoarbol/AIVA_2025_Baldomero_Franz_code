@@ -50,7 +50,7 @@ class ResultGenerator:
 
         # Texto informativo
         info = f"Grandes: {len(self.big_caps)} | Pequennos: {len(self.small_caps)}"
-        info2 = f"Precio componentes: {total} | Beneficio: {profit}"
+        info2 = f"Precio componentes (centimos): {total} | Beneficio (centimos): {profit}"
 
         # Posicionar texto con margen desde la parte inferior izquierda
         h, w = annotated.shape[:2]
